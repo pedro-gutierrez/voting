@@ -1,18 +1,18 @@
 # redis
---- 
+---
 apiVersion: v1
 kind: Service
-metadata: 
-  labels: 
+metadata:
+  labels:
     app: redis
   name: redis
-spec: 
+spec:
   clusterIP: None
   ports:
-  - name: redis-service
-    port: 6379
-    targetPort: 6379
-  selector: 
+    - name: redis-service
+      port: 6379
+      targetPort: 6379
+  selector:
     app: redis
 ---
 apiVersion: apps/v1
@@ -32,27 +32,32 @@ spec:
         app: redis
     spec:
       containers:
-      - name: redis
-        image: redis:alpine
-        ports:
-        - containerPort: 6379
-          name: redis
+        - name: redis
+          image: redis:alpine
+          ports:
+            - containerPort: 6379
+              name: redis
+              resources:
+                limits:
+                  memory: "200Mi"
+                requests:
+                  memory: "100Mi"
 
 # db
---- 
+---
 apiVersion: v1
 kind: Service
-metadata: 
-  labels: 
+metadata:
+  labels:
     app: db
   name: db
-spec: 
+spec:
   clusterIP: None
-  ports: 
-  - name: db
-    port: 5432
-    targetPort: 5432
-  selector: 
+  ports:
+    - name: db
+      port: 5432
+      targetPort: 5432
+  selector:
     app: db
 ---
 apiVersion: apps/v1
@@ -72,25 +77,30 @@ spec:
         app: db
     spec:
       containers:
-      - name: db
-        image: postgres:9.4
-        env:
-        - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
-        - name: POSTGRES_USER
-          value: postgres
-        - name: POSTGRES_PASSWORD
-          value: postgres
-        ports:
-        - containerPort: 5432
-          name: db
-        volumeMounts:
-        - name: db-data
-          mountPath: /var/lib/postgresql/data
+        - name: db
+          image: postgres:9.4
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+          ports:
+            - containerPort: 5432
+              name: db
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            limits:
+              memory: "200Mi"
+            requests:
+              memory: "100Mi"
       volumes:
-      - name: db-data
-        persistentVolumeClaim:
-          claimName: postgres-pv-claim
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -114,9 +124,9 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 5001
-    targetPort: 80
-    name: result-service
+    - port: 5001
+      targetPort: 80
+      name: result-service
   selector:
     app: result
 ---
@@ -137,11 +147,16 @@ spec:
         app: result
     spec:
       containers:
-      - name: result
-        image: dockersamples/examplevotingapp_result:before
-        ports:
-        - containerPort: 80
-          name: result
+        - name: result
+          image: dockersamples/examplevotingapp_result:before
+          ports:
+            - containerPort: 80
+              name: result
+              resources:
+                limits:
+                  memory: "200Mi"
+                requests:
+                  memory: "100Mi"
 
 # vote
 ---
@@ -177,41 +192,51 @@ spec:
         app: vote
     spec:
       containers:
-      - name: vote
-        image: dockersamples/examplevotingapp_vote:before
-        ports:
-        - containerPort: 80
-          name: vote
+        - name: vote
+          image: dockersamples/examplevotingapp_vote:before
+          ports:
+            - containerPort: 80
+              name: vote
+              resources:
+                limits:
+                  memory: "200Mi"
+                requests:
+                  memory: "100Mi"
 
 # worker
---- 
+---
 apiVersion: v1
 kind: Service
-metadata: 
-  labels: 
+metadata:
+  labels:
     apps: worker
   name: worker
-spec: 
+spec:
   clusterIP: None
-  selector: 
+  selector:
     app: worker
---- 
+---
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
-  labels: 
+metadata:
+  labels:
     app: worker
   name: worker
-spec: 
+spec:
   replicas: 1
   selector:
     matchLabels:
       app: worker
-  template: 
-    metadata: 
-      labels: 
+  template:
+    metadata:
+      labels:
         app: worker
-    spec: 
-      containers: 
-      - image: dockersamples/examplevotingapp_worker
-        name: worker
+    spec:
+      containers:
+        - image: dockersamples/examplevotingapp_worker
+          name: worker
+          resources:
+            limits:
+              memory: "200Mi"
+            requests:
+              memory: "100Mi"
