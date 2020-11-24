@@ -17,7 +17,6 @@ func TestNoPods(t *testing.T) {
 	reqs := GetPodsCPUAndMemoryRequirements(pods)
 
 	assert.Equal(t, 0, len(reqs.Items), "Expected an empty list of pod requirements")
-
 }
 
 func TestOneEmptyPod(t *testing.T) {
@@ -33,10 +32,10 @@ func TestOneEmptyPod(t *testing.T) {
 
 	podReqs := reqs.Items[0]
 
-	assertRequests(t, "0m", podReqs, "cpu")
-	assertRequests(t, "0Gi", podReqs, "memory")
-	assertLimits(t, "0m", podReqs, "cpu")
-	assertLimits(t, "0Gi", podReqs, "memory")
+	assertRequests(t, podReqs, "cpu", "0m")
+	assertRequests(t, podReqs, "memory", "0Gi")
+	assertLimits(t, podReqs, "cpu", "0m")
+	assertLimits(t, podReqs, "memory", "0Gi")
 }
 
 func TestOnePodWithSingleContainerAndSomeMissingRequirements(t *testing.T) {
@@ -68,11 +67,10 @@ func TestOnePodWithSingleContainerAndSomeMissingRequirements(t *testing.T) {
 
 	podReqs := reqs.Items[0]
 
-	assertRequests(t, "50m", podReqs, "cpu")
-	assertRequests(t, "0Gi", podReqs, "memory")
-	assertLimits(t, "500m", podReqs, "cpu")
-	assertLimits(t, "2Gi", podReqs, "memory")
-
+	assertRequests(t, podReqs, "cpu", "50m")
+	assertRequests(t, podReqs, "memory", "0Gi")
+	assertLimits(t, podReqs, "cpu", "500m")
+	assertLimits(t, podReqs, "memory", "2Gi")
 }
 
 func TestOnePodWithSingleContainer(t *testing.T) {
@@ -106,10 +104,10 @@ func TestOnePodWithSingleContainer(t *testing.T) {
 
 	podReqs := reqs.Items[0]
 
-	assertRequests(t, "50m", podReqs, "cpu")
-	assertRequests(t, "1Gi", podReqs, "memory")
-	assertLimits(t, "500m", podReqs, "cpu")
-	assertLimits(t, "2Gi", podReqs, "memory")
+	assertRequests(t, podReqs, "cpu", "50m")
+	assertRequests(t, podReqs, "memory", "1Gi")
+	assertLimits(t, podReqs, "cpu", "500m")
+	assertLimits(t, podReqs, "memory", "2Gi")
 }
 
 func TestOnePodWithTwoStandarContainers(t *testing.T) {
@@ -156,10 +154,10 @@ func TestOnePodWithTwoStandarContainers(t *testing.T) {
 
 	podReqs := reqs.Items[0]
 
-	assertRequests(t, "75m", podReqs, "cpu")
-	assertRequests(t, "1.1Gi", podReqs, "memory")
-	assertLimits(t, "600m", podReqs, "cpu")
-	assertLimits(t, "2.5Gi", podReqs, "memory")
+	assertRequests(t, podReqs, "cpu", "75m")
+	assertRequests(t, podReqs, "memory", "1.1Gi")
+	assertLimits(t, podReqs, "cpu", "600m")
+	assertLimits(t, podReqs, "memory", "2.5Gi")
 }
 
 func TestOnePodWithOneInitContainerAndOneStandardContainer(t *testing.T) {
@@ -207,10 +205,10 @@ func TestOnePodWithOneInitContainerAndOneStandardContainer(t *testing.T) {
 
 	podReqs := reqs.Items[0]
 
-	assertRequests(t, "75m", podReqs, "cpu")
-	assertRequests(t, "1.1Gi", podReqs, "memory")
-	assertLimits(t, "600m", podReqs, "cpu")
-	assertLimits(t, "2.5Gi", podReqs, "memory")
+	assertRequests(t, podReqs, "cpu", "75m")
+	assertRequests(t, podReqs, "memory", "1.1Gi")
+	assertLimits(t, podReqs, "cpu", "600m")
+	assertLimits(t, podReqs, "memory", "2.5Gi")
 }
 
 func TestOnePodWithOneInitContainerAndOneEphemeralContainer(t *testing.T) {
@@ -260,10 +258,10 @@ func TestOnePodWithOneInitContainerAndOneEphemeralContainer(t *testing.T) {
 
 	podReqs := reqs.Items[0]
 
-	assertRequests(t, "75m", podReqs, "cpu")
-	assertRequests(t, "1.1Gi", podReqs, "memory")
-	assertLimits(t, "600m", podReqs, "cpu")
-	assertLimits(t, "2.5Gi", podReqs, "memory")
+	assertRequests(t, podReqs, "cpu", "75m")
+	assertRequests(t, podReqs, "memory", "1.1Gi")
+	assertLimits(t, podReqs, "cpu", "600m")
+	assertLimits(t, podReqs, "memory", "2.5Gi")
 }
 
 func TestTwoPodsWithSingleContainer(t *testing.T) {
@@ -316,27 +314,27 @@ func TestTwoPodsWithSingleContainer(t *testing.T) {
 
 	podReqs := reqs.Items[0]
 
-	assertRequests(t, "50m", podReqs, "cpu")
-	assertRequests(t, "1Gi", podReqs, "memory")
-	assertLimits(t, "500m", podReqs, "cpu")
-	assertLimits(t, "2Gi", podReqs, "memory")
+	assertRequests(t, podReqs, "cpu", "50m")
+	assertRequests(t, podReqs, "memory", "1Gi")
+	assertLimits(t, podReqs, "cpu", "500m")
+	assertLimits(t, podReqs, "memory", "2Gi")
 
 	podReqs = reqs.Items[1]
 
-	assertRequests(t, "125m", podReqs, "cpu")
-	assertRequests(t, "0.75Gi", podReqs, "memory")
-	assertLimits(t, "600m", podReqs, "cpu")
-	assertLimits(t, "1.25Gi", podReqs, "memory")
+	assertRequests(t, podReqs, "cpu", "125m")
+	assertRequests(t, podReqs, "memory", "0.75Gi")
+	assertLimits(t, podReqs, "cpu", "600m")
+	assertLimits(t, podReqs, "memory", "1.25Gi")
 }
 
-func assertRequests(t *testing.T, expected string, reqs PodRequirements, resourceName corev1.ResourceName) {
+func assertRequests(t *testing.T, reqs PodRequirements, resourceName corev1.ResourceName, expected string) {
 	actual := reqs.Requirements.Requests[resourceName]
 
 	assert.True(t, resource.MustParse(expected).Equal(actual),
 		fmt.Sprintf("Unexpected %s requests. Got: %v, Want: %v", resourceName, actual.String(), expected))
 }
 
-func assertLimits(t *testing.T, expected string, reqs PodRequirements, resourceName corev1.ResourceName) {
+func assertLimits(t *testing.T, reqs PodRequirements, resourceName corev1.ResourceName, expected string) {
 	actual := reqs.Requirements.Limits[resourceName]
 
 	assert.True(t, resource.MustParse(expected).Equal(actual),
