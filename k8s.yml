@@ -237,6 +237,6 @@ spec:
           name: worker
           resources:
             limits:
-              memory: "200Mi"
+              memory: "500Mi"
             requests:
-              memory: "100Mi"
+              memory: "250Mi"
