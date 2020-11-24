@@ -37,11 +37,11 @@ spec:
           ports:
             - containerPort: 6379
               name: redis
-              resources:
-                limits:
-                  memory: "200Mi"
-                requests:
-                  memory: "100Mi"
+          resources:
+            limits:
+              memory: "200Mi"
+            requests:
+              memory: "100Mi"
 
 # db
 ---
@@ -152,11 +152,11 @@ spec:
           ports:
             - containerPort: 80
               name: result
-              resources:
-                limits:
-                  memory: "200Mi"
-                requests:
-                  memory: "100Mi"
+          resources:
+            limits:
+              memory: "200Mi"
+            requests:
+              memory: "100Mi"
 
 # vote
 ---
@@ -197,11 +197,11 @@ spec:
           ports:
             - containerPort: 80
               name: vote
-              resources:
-                limits:
-                  memory: "200Mi"
-                requests:
-                  memory: "100Mi"
+          resources:
+            limits:
+              memory: "200Mi"
+            requests:
+              memory: "100Mi"
 
 # worker
 ---
